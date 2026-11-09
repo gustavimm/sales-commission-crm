@@ -1,3 +1,11 @@
+## Telas
+
+![Login](docs/login.png)
+![Dashboard do gestor](docs/dashboard-gestor.png)
+![Metas](docs/metas.png)
+![Comissão](docs/comissao.png)
+![Minhas vendas](docs/minhas-vendas.png)
+
 # Sales Commission CRM (demo)
 
 CRM de vendas e comissão com login por papéis, metas e apuração por ciclo.
