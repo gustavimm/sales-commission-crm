@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.token.email)).data;
+    }
+
+    function isGestorOuAdmin() {
+      return signedIn() && profile().role in ['gestor', 'admin'];
+    }
+
+    // Somente admin (gestor NÃO conta aqui). Usada para qualquer mudança de role.
+    function isAdmin() {
+      return signedIn() && profile().role == 'admin';
+    }
+
+    match /users/{email} {
+      // Leitura: o próprio perfil, ou qualquer perfil se for gestor/admin
+      // (a tela de Usuários lista todos).
+      allow read: if signedIn() && (request.auth.token.email == email || isGestorOuAdmin());
+
+      // Criação: só o próprio usuário, e SOMENTE nascendo como o cadastro do app
+      // (AuthContext.cadastrar) faz: role 'vendedor', aprovacao 'pendente', status 'ativo'.
+      // Assim ninguém se auto-promove a gestor/admin nem se auto-aprova ao se cadastrar.
+      allow create: if signedIn()
+        && request.auth.token.email == email
+        && request.resource.data.role == 'vendedor'
+        && request.resource.data.aprovacao == 'pendente'
+        && request.resource.data.status == 'ativo';
+
+      // Atualização:
+      //  - admin pode alterar qualquer campo, inclusive role;
+      //  - gestor continua aprovando/recusando, ativando/desativando e editando
+      //    páginas, mas o role do documento tem que permanecer idêntico
+      //    (.get(..., null) evita erro se o campo não existir).
+      allow update: if isAdmin()
+        || (isGestorOuAdmin()
+            && request.resource.data.get('role', null) == resource.data.get('role', null));
+
+      // Remoção de perfis: apenas admin.
+      allow delete: if isAdmin();
+    }
+
+    match /vendas/{vendaId} {
+      // Toda leitura exige autenticação.
+      allow read: if signedIn();
+      // Vendedor só cria venda identificada pelo próprio e-mail.
+      allow create: if signedIn() && (
+        isGestorOuAdmin() || request.resource.data.vendedorEmail == request.auth.token.email
+      );
+      // Gestor e admin podem alterar ou remover vendas.
+      allow update, delete: if isGestorOuAdmin();
+    }
+
+    match /metas/{metaId} {
+      // Metas são visíveis a usuários autenticados.
+      allow read: if signedIn();
+      // Apenas gestor e admin gerenciam metas.
+      allow write: if isGestorOuAdmin();
+    }
+
+    match /metas_upgrade/{metaId} {
+      // Metas de upgrade seguem a mesma proteção das metas gerais.
+      allow read: if signedIn();
+      allow write: if isGestorOuAdmin();
+    }
+  }
+}
