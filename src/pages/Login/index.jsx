@@ -183,7 +183,7 @@ export default function Login() {
                 🔐
               </div>
               <div>
-                <h2 className="text-lg font-bold tracking-tight">Bem-vindo ao AmoSales! 👋</h2>
+                <h2 className="text-lg font-bold tracking-tight">Bem-vindo ao Sales CRM! 👋</h2>
                 <p className="text-xs opacity-50 mt-2 leading-relaxed">
                   Por segurança, recomendamos trocar sua senha padrão.
                 </p>
@@ -320,13 +320,11 @@ export default function Login() {
 
           {/* Logo */}
           <div className="flex flex-col items-center gap-3 mb-8">
-            <img
-              src="/logo.png"
-                  alt="Fibra Demo"
-              className="w-24 h-24 object-contain rounded-2xl"
-            />
+            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
+              <span className="text-3xl font-black text-primary-content">S</span>
+            </div>
             <div className="text-center">
-              <h1 className="text-3xl font-semibold tracking-tight">AmoSales</h1>
+              <h1 className="text-3xl font-semibold tracking-tight">Sales CRM</h1>
               <p className="text-sm opacity-50 mt-2 pb-1">
                 {modo === 'login' ? 'Bem-vindo de volta!' : 'Crie sua conta para começar'}
               </p>
@@ -557,7 +555,7 @@ export default function Login() {
           )}
 
           <p className="text-center text-xs opacity-25 mt-6">
-            AmoSales © {new Date().getFullYear()} · Fibra Demo
+            Sales CRM © 2026 · Demo
           </p>
 
         </div>

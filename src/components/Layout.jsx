@@ -180,10 +180,10 @@ export default function Layout() {
         {/* Logo */}
         <div className="p-4 flex items-center min-w-max h-16 border-b border-base-300">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-black text-primary-content">A</span>
+            <span className="text-sm font-black text-primary-content">S</span>
           </div>
           <div className="ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 min-w-max">
-            <span className="text-base font-bold">AmoSales</span>
+            <span className="text-base font-bold">Sales CRM</span>
           </div>
         </div>
 
