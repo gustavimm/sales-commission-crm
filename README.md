@@ -1,11 +1,3 @@
-## Telas
-
-![Login](docs/login.png)
-![Dashboard do gestor](docs/dashboard-gestor.png)
-![Metas](docs/metas.png)
-![Comissão](docs/comissao.png)
-![Minhas vendas](docs/minhas-vendas.png)
-
 # Sales Commission CRM (demo)
 
 CRM de vendas e comissão com login por papéis, metas e apuração por ciclo.
@@ -14,7 +6,19 @@ para uma equipe comercial.
 
 ![Dashboard do gestor](docs/dashboard-gestor.png)
 
+## Telas
+
+<p>
+  <img src="docs/metas.png" width="49%" alt="Metas" />
+  <img src="docs/comissao.png" width="49%" alt="Comissão" />
+</p>
+<p>
+  <img src="docs/minhas-vendas.png" width="49%" alt="Minhas vendas" />
+  <img src="docs/login.png" width="49%" alt="Login" />
+</p>
+
 ## Funcionalidades
+
 - Login por papéis: **admin**, **gestor** e **vendedor** (cada um vê só o que pode)
 - Registro de vendas e acompanhamento de metas
 - Comissão por faixas, calculada por ciclo de apuração (**dia 25 ao dia 24**)
@@ -23,17 +27,20 @@ para uma equipe comercial.
 - API em Express (`functions`) protegida por chave de API
 
 ## Stack
+
 React, Vite, Tailwind CSS, Firebase (Auth, Firestore, Hosting), Node.js/Express
 
 ## Como rodar
+
 1. `npm install`
 2. Crie um projeto no Firebase e copie `.env.example` para `.env.local`,
    preenchendo as variáveis `VITE_FIREBASE_*`
 3. Publique as regras: `firebase deploy --only firestore:rules`
-4. Popule os dados fictícios: `<comando do seed no package.json>`
+4. Popule os dados fictícios: `npm run seed`
 5. `npm run dev`
 
 ## Contas de demonstração
+
 Senha de todas: `Demo123!`
 
 | Papel | E-mail |
@@ -43,6 +50,7 @@ Senha de todas: `Demo123!`
 | Vendedor | vendedor1@exemplo.com |
 
 ## Aprendizados
+
 - **Segurança fica no servidor:** permissão só no front não protege nada.
   Migrei de listas de e-mails no código para um campo `role` + regras do Firestore.
 - **Regras abertas são risco:** corrigi uma regra que permitia criar perfil com papel elevado.
