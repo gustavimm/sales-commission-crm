@@ -61,17 +61,6 @@ const IconList = () => (
   </svg>
 )
 
-const IconFila = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="5" cy="8" r="2.5"/>
-    <circle cx="12" cy="8" r="2.5"/>
-    <circle cx="19" cy="8" r="2.5"/>
-    <path d="M1 21v-1a4 4 0 0 1 4-4"/>
-    <path d="M8.1 16A4 4 0 0 1 12 14a4 4 0 0 1 3.9 2"/>
-    <path d="M19 16a4 4 0 0 1 4 4v1"/>
-  </svg>
-)
-
 const IconLogout = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -197,7 +186,6 @@ export default function Layout() {
             <NavItem to="/upgrades" icon={<IconUpgrade />} label="Upgrades" />
           )}
           {podeVer('minhas-vendas') && <NavItem to="/minhas-vendas" icon={<IconList />} label="Minhas Vendas" />}
-          {podeVer('fila') && <NavItem to="/fila" icon={<IconFila />} label="Fila" />}
           {isGestor && <NavItem to="/usuarios" icon={<IconUsers />} label="Usuários" />}
         </nav>
 

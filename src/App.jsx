@@ -8,7 +8,6 @@ import NovaVenda from './pages/NovaVenda'
 import Metas from './pages/Metas'
 import TV from './pages/TV'
 import Usuarios from './pages/Usuarios'
-import Fila from './pages/Fila'
 import Comissao from './pages/Comissao'
 import MinhasVendas from './pages/MinhasVendas'
 import Upgrades from './pages/Upgrades'
@@ -54,16 +53,6 @@ export default function App() {
             {/* Página de usuários */}
             <Route path="usuarios" element={<Usuarios />} />
           </Route>
-
-          {/* Fila — protegida, sem sidebar (fullscreen) */}
-          <Route
-            path="/fila"
-            element={
-              <ProtectedRoute>
-                <Fila />
-              </ProtectedRoute>
-            }
-          />
 
           {/* Modo TV — exige login para não expor dados de vendas */}
           <Route

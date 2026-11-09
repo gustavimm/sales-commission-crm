@@ -234,6 +234,77 @@ function gerarVendas() {
   return vendas
 }
 
+// Vendas e upgrades de hoje e de ontem (relativos ao dia da execução, fuso de Brasília),
+// espalhados entre os vendedores demo. Não usa o PRNG principal, então as 200 vendas
+// acima não mudam. Ids por slot (hoje/ontem + sequência): rodar de novo regrava os
+// mesmos documentos (sem duplicar); em outro dia, eles passam a ter a nova data.
+const RECENTES_POR_DIA = { vendas: 6, upgrades: 4 }
+const STATUS_RECENTES = ['assinado', 'aguardando_bko', 'aguardando_instalacao', 'instalado', 'assinado']
+
+function gerarVendasRecentes() {
+  const recentes = []
+  const dias = [
+    { rotulo: 'hoje', offset: DIAS_PERIODO - 1 },
+    { rotulo: 'ontem', offset: DIAS_PERIODO - 2 },
+  ]
+  dias.forEach(({ rotulo, offset }, idxDia) => {
+    const dia = dataDoDia(offset)
+    const total = RECENTES_POR_DIA.vendas + RECENTES_POR_DIA.upgrades
+    for (let k = 0; k < total; k++) {
+      const ehUpgrade = k >= RECENTES_POR_DIA.vendas
+      const vendedor = VENDEDORES[(k + idxDia * 3) % VENDEDORES.length]
+      let hora = 9 + k
+      let minuto = (k * 17 + idxDia * 5) % 60
+      if (offset === DIAS_PERIODO - 1) {
+        // Hoje: nunca gera horário no futuro.
+        hora = Math.min(hora, AGORA_BR.getUTCHours())
+        if (hora === AGORA_BR.getUTCHours()) minuto = Math.min(minuto, AGORA_BR.getUTCMinutes())
+      }
+      const status = STATUS_RECENTES[k % STATUS_RECENTES.length]
+      const seq = pad(k + 1)
+      const base = {
+        contratoId: String(200000 + idxDia * 100 + k + 1),
+        nome: `Cliente ${rotulo === 'hoje' ? 'Hoje' : 'Ontem'} ${seq}`,
+        contato: `(11) 9${pad(7000 + idxDia * 100 + k * 13, 4)}-${pad(1000 + k * 37, 4)}`,
+        vendedorEmail: vendedor.email,
+        vendedorNome: vendedor.nome,
+        criadoEm: timestampLocal(dia, hora, minuto),
+        status,
+      }
+      if (ehUpgrade) {
+        const categoria = k % 2 === 0 ? 'residencial' : 'empresa'
+        const doGrupo = PLANOS.filter(p => p.categoria === categoria)
+        const idxNovo = 1 + (k + idxDia) % (doGrupo.length - 1)
+        const novo = doGrupo[idxNovo]
+        const anterior = doGrupo[idxNovo - 1]
+        recentes.push({
+          id: `demo-venda-${rotulo}-${seq}`,
+          ...base,
+          tipo: 'upgrade',
+          servico: novo.nome,
+          valor: novo.valor,
+          valorAnterior: anterior.valor,
+          produtoVendido: novo.nome,
+          dataAssinatura: dataISO(dia),
+          diferenca: arredondar(novo.valor - anterior.valor),
+          categoriaUpgrade: k % 4 === 0 ? 'tecnologia' : 'padrao',
+          statusUpgrade: STATUS_UPGRADE_POR_STATUS[status],
+        })
+      } else {
+        const plano = PLANOS[(k + idxDia * 2) % PLANOS.length]
+        recentes.push({
+          id: `demo-venda-${rotulo}-${seq}`,
+          ...base,
+          tipo: 'nova_venda',
+          servico: plano.nome,
+          valor: plano.valor,
+        })
+      }
+    }
+  })
+  return recentes
+}
+
 // --------------------------------------------------------------- Firebase ---
 async function garantirContaEntrar(email) {
   try {
@@ -274,7 +345,7 @@ function resumir(vendas) {
 }
 
 async function main() {
-  const vendas = gerarVendas()
+  const vendas = [...gerarVendas(), ...gerarVendasRecentes()]
   if (DRY_RUN) {
     console.log(`[dry-run] ${resumir(vendas)}`)
     console.log(`[dry-run] metas: ${ciclosDasVendas(vendas).join(', ')}`)

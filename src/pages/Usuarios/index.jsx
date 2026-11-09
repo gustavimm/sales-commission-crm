@@ -64,7 +64,6 @@ const PAGINAS_APP = [
   { chave: 'comissao', label: 'Comissão', descricao: 'Cálculo de comissões' },
   { chave: 'upgrades', label: 'Upgrades', descricao: 'Esteira de gestão de upgrades' },
   { chave: 'minhas-vendas', label: 'Minhas Vendas', descricao: 'Histórico de vendas registradas' },
-  { chave: 'fila', label: 'Fila', descricao: 'Fila de atendimento' },
 ]
 
 const PAGINAS_PADRAO = PAGINAS_APP.filter(p => p.chave !== 'upgrades').map(p => p.chave)
